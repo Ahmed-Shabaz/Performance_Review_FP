@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Review - Data Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function upDateReviewSections() {
+            var Role = document.getElementById('Role').value;
+            var header = document.getElementById('review-title');
+            var employeeReview = document.getElementById('employee_review');
+
+            if (Role === 'Employee') {
+                header.innerText = 'Productivity Review - Employee';
+                employeeReview.style.display = 'block'; // Show section
+            } else if (Role === 'Supervisor') {
+                header.innerText = 'Productivity Review - Supervisor';
+                employeeReview.style.display = 'block'; // Show section
+            } else {
+                header.innerText = 'Productivity Review';
+                employeeReview.style.display = 'none'; // Hide section
+            }
+        }
+
+        function loadEmployeeData(employeeName) {
+            $.post("/get_employee_data", { Employee_Name: employeeName }, function(data) {
+                $('#Employee_ID').val(data['Employee ID']);
+                $('#Department').val(data['Department']);
+                $('#Designation').val(data['Designation']);
+                $('#Reporting_Manager').val(data['Reporting Manager']);
+            });
+        }
+
+        $(document).ready(function() {
+            $('#Employee_Name').change(function() {
+                var selectedEmployee = $(this).val();
+                loadEmployeeData(selectedEmployee);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/company_logo.png') }}" alt="Company Logo" class="logo">
+        <h1>Performance Review - Data Analyst</h1>
+        <form action="{{ url_for('submit') }}" method="POST">
+            <div class="section">
+                <h3>Employee Info</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="Employee_Name">Employee Name</label>
+                        <select id="Employee_Name" name="Employee_Name" required>
+                            <option value="" disabled selected>Select an option</option>
+                            {% for name in Employee_Names %}
+                            <option value="{{ name }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Employee_ID">Employee ID</label>
+                        <input type="text" id="Employee_ID" name="Employee_ID" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="Department">Department</label>
+                        <input type="text" id="Department" name="Department" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Designation">Designation</label>
+                        <input type="text" id="Designation" name="Designation" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="Reporting_Manager">Reporting Manager</label>
+                        <input type="text" id="Reporting_Manager" name="Reporting_Manager" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Date">Date</label>
+                        <input type="Date" id="Date" name="Date" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Role</h3>
+                <div class="form-group">
+                    <label for="Role">Select Role</label>
+                    <select id="Role" name="Role" onchange="upDateReviewSections()" required>
+                        <option value="" disabled selected>Select an option</option>
+                        <option value="Employee">Employee</option>
+                        <option value="Supervisor">Supervisor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="employee_review" class="section" style="display: none;">
+                <h3 id="review-title">Productivity Review</h3>
+                <div class="select-group">
+                    <div class="form-group">
+                        <label for="Sourcing">Sourcing</label>
+                        <select id="Sourcing" name="Sourcing" required>
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="1">1 - Poor Performance</option>
+                            <option value="2">2 - Satisfactory</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Outstanding</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Quality">Quality</label>
+                        <select id="Quality" name="Quality" required>
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="1">1 - Poor Performance</option>
+                            <option value="2">2 - Satisfactory</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Outstanding</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="select-group">
+                    <div class="form-group">
+                        <label for="Quantity">Quantity</label>
+                        <select id="Quantity" name="Quantity" required>
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="1">1 - Poor Performance</option>
+                            <option value="2">2 - Satisfactory</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Outstanding</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Domain_Knowledge">Domain Knowledge</label>
+                        <select id="Domain_Knowledge" name="Domain_Knowledge" required>
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="1">1 - Poor Performance</option>
+                            <option value="2">2 - Satisfactory</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Outstanding</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="select-group">
+                    <div class="form-group">
+                        <label for="Extra_Miler">Extra Miler</label>
+                        <select id="Extra_Miler" name="Extra_Miler" required>
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="1">1 - Poor Performance</option>
+                            <option value="2">2 - Satisfactory</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Outstanding</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Attendance">Attendance / Punctuality</label>
+                        <select id="Attendance" name="Attendance" required>
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="1">1 - Poor Performance</option>
+                            <option value="2">2 - Satisfactory</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Outstanding</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Goals and Comments</h3>
+                <div class="form-group">
+                    <label for="Achieved_Goals">Achieved Goals Set in Previous Review?</label>
+                    <textarea id="Achieved_Goals" name="Achieved_Goals" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="Next_Goals">Goals for Next Review Period</label>
+                    <textarea id="Next_Goals" name="Next_Goals" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="Comments">Comments</label>
+                    <textarea id="Comments" name="Comments"></textarea>
+                </div>
+            </div>
+            <center>
+            <button type="submit" class="submit-btn">Submit</button>
+            </center>
+        </form>
+    </div>
+</body>
+</html>
